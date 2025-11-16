@@ -4,7 +4,12 @@ import { useFloating, autoUpdate, offset, flip, shift } from '@floating-ui/react
 const defaultFilter = (value, items) => {
   if (!value || value.trim().length === 0) return []
   const trimmedValue = value.trim().toLowerCase()
-  return items.filter(item => item.toLowerCase().startsWith(trimmedValue))
+  // Only suggest items that start with the input and are not exactly equal to it.
+  // This prevents the dropdown from reopening immediately after selecting a word.
+  return items.filter(item => {
+    const lower = item.toLowerCase()
+    return lower.startsWith(trimmedValue) && lower !== trimmedValue
+  })
 }
 
 const WordSuggestions = ({ 

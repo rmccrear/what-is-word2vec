@@ -30,6 +30,7 @@
   margin: 1rem;
   background-color: #fff;
   border-radius: 8px;
+  position: relative;
 }
 
 .right-content {

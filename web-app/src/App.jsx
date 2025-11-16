@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import twitterVectors from './word_vectors.json'
 import wikiVectors from './word_vectors_wiki.json'
 import DotProductDisplay from './components/DotProductDisplay'
@@ -13,9 +13,11 @@ import './App.css'
 function App() {
   const [dataset, setDataset] = useState('twitter')
   const [wordVectors, setWordVectors] = useState(twitterVectors)
-  const [word, setWord] = useState('philly')
+  const [word, setWord] = useState('')
   const [hasSuggestions, setHasSuggestions] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
   const inputRef = useRef(null)
+  const settingsRef = useRef(null)
 
   const { results, error, selectedWord, setSelectedWord } = useWordSearch(word, wordVectors, hasSuggestions)
 
@@ -33,40 +35,90 @@ function App() {
         'This database contains the most common 1,000 words from the GloVe Twitter 25-dimensional word embeddings model. Click on any word below to search for its most similar words.',
       modelLink: 'https://huggingface.co/jkrukowski/glove-twitter-25',
       modelLabel: 'GloVe Twitter 25',
+      shortLabel: 'Twitter (1,000 words, 25-dimensional)',
     },
     wiki: {
       description:
         'This database contains 5,000 high-frequency words from the GloVe Wiki-Gigaword 50-dimensional word embeddings model. Click on any word below to search for its most similar words.',
       modelLink: 'https://nlp.stanford.edu/projects/glove/',
       modelLabel: 'GloVe Wiki-Gigaword 50',
+      shortLabel: 'Wiki + Gigaword (5,000 words, 50-dimensional)',
     },
   }
 
-  const handleDatasetChange = (event) => {
-    const newDataset = event.target.value
+  const toggleSettings = () => {
+    setShowSettings((prev) => !prev)
+  }
+
+  const handleDatasetSelect = (newDataset) => {
     setDataset(newDataset)
     setWordVectors(newDataset === 'wiki' ? wikiVectors : twitterVectors)
     // Reset selected word state when switching datasets
     setSelectedWord(null)
+    setShowSettings(false)
   }
+
+  // Close settings panel when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (settingsRef.current && !settingsRef.current.contains(event.target)) {
+        setShowSettings(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   return (
     <div className={showRightPanel ? 'grid' : 'container'}>
       <div className={showRightPanel ? 'left-content' : ''}>
         <h1>Word2Vec Similarity Search</h1>
         <p>Find the 10 most similar words using cosine similarity</p>
-        <div className="form-group">
-          <label htmlFor="dataset-select">Dataset:</label>
-          <select
-            id="dataset-select"
-            value={dataset}
-            onChange={handleDatasetChange}
+        <div className="settings-gear" ref={settingsRef}>
+          <button
+            type="button"
+            className="settings-button"
+            onClick={toggleSettings}
+            aria-label="Dataset settings"
           >
-            <option value="twitter">Twitter (1,000 words, 25-dimensional)</option>
-            <option value="wiki">Wiki + Gigaword (5,000 words, 50-dimensional)</option>
-          </select>
+            ⚙
+          </button>
+          {showSettings && (
+            <div className="settings-panel">
+              <div className="settings-label">Dataset</div>
+              <div className="settings-options">
+                <button
+                  type="button"
+                  className={
+                    dataset === 'twitter'
+                      ? 'settings-option settings-option--active'
+                      : 'settings-option'
+                  }
+                  onClick={() => handleDatasetSelect('twitter')}
+                >
+                  Twitter (1,000 words, 25-dimensional)
+                </button>
+                <button
+                  type="button"
+                  className={
+                    dataset === 'wiki'
+                      ? 'settings-option settings-option--active'
+                      : 'settings-option'
+                  }
+                  onClick={() => handleDatasetSelect('wiki')}
+                >
+                  Wiki + Gigaword (5,000 words, 50-dimensional)
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-        <p className="info">Searching {wordVectors.words.length} words from the selected dataset</p>
+        <p className="info">
+          Searching from the {datasetMeta[dataset].shortLabel} dataset
+        </p>
 
         <div className="form-group">
                 <label htmlFor="word-input">Enter a word:</label>
@@ -77,7 +129,7 @@ function App() {
                     type="text"
                     value={word}
                     onChange={(e) => setWord(e.target.value)}
-                    placeholder="e.g., king, queen, happy..."
+                    placeholder="e.g., people, back, house..."
                     autoFocus
                   />
                   <WordSuggestions
