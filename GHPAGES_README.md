@@ -142,27 +142,47 @@ The build creates:
 - Hard refresh your browser (Ctrl+F5 or Cmd+Shift+R)
 - Check GitHub Pages logs in repository Settings
 
-## Deployment Script (Optional)
+## Automated Deployment with Git Hook
 
-You can create a simple deployment script:
+A pre-push git hook automatically rebuilds and updates the gh-pages branch when you push to it.
+
+### Setup (One-time)
+
+Install the git hook on your machine:
 
 ```bash
-#!/bin/bash
-# deploy.sh
-
-cd web-app
-npm run build
-cd ..
-git checkout gh-pages
-cp -r web-app/dist/* .
-touch .nojekyll
-git add .
-git commit -m "Deploy: $(date)"
-git push origin gh-pages
-git checkout main
+./scripts/install-git-hooks.sh
 ```
 
-Make it executable: `chmod +x deploy.sh`
+This will set up the pre-push hook that automatically rebuilds gh-pages when you push to it.
 
-Run it: `./deploy.sh`
+### How It Works
+
+1. When you push to the `gh-pages` branch, the hook automatically:
+   - Builds the application
+   - Copies build files to root
+   - Commits the changes to gh-pages
+   - Switches you back to your original branch
+
+2. Then you push:
+   ```bash
+   git push origin gh-pages
+   ```
+
+### Manual Deployment Script
+
+You can also run the deployment script manually:
+
+```bash
+./scripts/deploy-gh-pages.sh
+```
+
+This script:
+- Builds the app from `web-app/`
+- Switches to gh-pages branch
+- Copies build files to root
+- Commits changes
+- Switches back to your original branch
+
+**Note**: The script preserves your current branch and stashes uncommitted changes if needed.
 
