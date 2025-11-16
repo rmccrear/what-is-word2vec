@@ -47,7 +47,7 @@ const DotProductDisplay = ({ word, results, wordVectors, selectedWord, onBack })
         ← Back to About
       </button>
       <h3>
-        Dot Product Calculation:<br />
+        Cosine Similarity (via Dot Product):<br />
         "<VectorTooltip word={word} wordVectors={wordVectors} theme="darkBg">
           {word}
         </VectorTooltip>" · "<VectorTooltip word={matchWord} wordVectors={wordVectors} theme="darkBg">

@@ -72,11 +72,11 @@ function App() {
     }
   }, [])
 
-  return (
-    <div className={showRightPanel ? 'grid' : 'container'}>
-      <div className={showRightPanel ? 'left-content' : ''}>
-        <h1>Word2Vec Similarity Search</h1>
-        <p>Find the 10 most similar words using cosine similarity</p>
+        return (
+          <div className={showRightPanel ? 'grid' : 'container'}>
+            <div className={showRightPanel ? 'left-content' : ''}>
+              <h1>Word2Vec Similarity Search</h1>
+              <p>Find the 10 most similar words using cosine similarity</p>
         <div className="settings-gear" ref={settingsRef}>
           <button
             type="button"
@@ -120,7 +120,7 @@ function App() {
           Searching from the {datasetMeta[dataset].shortLabel} dataset
         </p>
 
-        <div className="form-group">
+              <div className="form-group">
                 <label htmlFor="word-input">Enter a word:</label>
                 <div className="input-wrapper">
                   <input

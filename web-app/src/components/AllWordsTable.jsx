@@ -17,15 +17,15 @@ const AllWordsTable = ({ words, wordVectors, onWordSelect, description, modelLin
             <tr>
               <th>
                 {modelLink && modelLabel ? (
-                  <a
+                <a 
                     href={modelLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="model-link-header"
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="model-link-header"
+                  onClick={(e) => e.stopPropagation()}
+                >
                     {modelLabel}
-                  </a>
+                </a>
                 ) : (
                   'Embedding Model'
                 )}
