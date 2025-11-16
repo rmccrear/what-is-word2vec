@@ -132,16 +132,9 @@ The build creates:
 **Changes Not Appearing**:
 - GitHub Pages can take 1-5 minutes to update
 - Hard refresh your browser (Ctrl+F5 or Cmd+Shift+R)
-- Check GitHub Actions/Pages logs in repository Settings
+- Check GitHub Pages logs in repository Settings
 
-## Automated Deployment (Optional)
-
-For automated deployments, consider:
-- GitHub Actions workflow
-- GitHub Pages deployment action
-- Or use a service like Netlify/Vercel for easier deployments
-
-## Manual Deployment Script
+## Deployment Script (Optional)
 
 You can create a simple deployment script:
 
@@ -162,5 +155,6 @@ git checkout main
 ```
 
 Make it executable: `chmod +x deploy.sh`
+
 Run it: `./deploy.sh`
 
