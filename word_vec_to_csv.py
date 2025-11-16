@@ -6,11 +6,13 @@ from nltk.corpus import stopwords
 import string
 from langdetect import detect, LangDetectException
 from better_profanity import profanity
+import sys
 
 # --- Configuration ---
 NUM_WORDS = 1000
-OUTPUT_FILE = "top_1000_words_vectors.csv"
-MODEL_NAME = "glove-twitter-25" # A small, fast-loading model for demonstration
+# Default model, can be overridden via command line
+DEFAULT_MODEL = "glove-twitter-25"
+DEFAULT_OUTPUT = "top_1000_words_vectors.csv"
 
 def is_ascii_only(word):
     """Check if word contains only ASCII characters."""
@@ -34,13 +36,20 @@ def is_nsfw(word):
     """Check if word contains NSFW/profane content."""
     return profanity.contains_profanity(word)
 
-def word_vec_to_csv():
+def word_vec_to_csv(model_name=None, output_file=None, num_words=None):
     """Loads a Word2Vec model, extracts the top N words/vectors (excluding stop words), and saves to CSV."""
     
-    print(f"1. Downloading and loading model: {MODEL_NAME}...")
+    if model_name is None:
+        model_name = DEFAULT_MODEL
+    if output_file is None:
+        output_file = DEFAULT_OUTPUT
+    if num_words is None:
+        num_words = NUM_WORDS
+    
+    print(f"1. Downloading and loading model: {model_name}...")
     try:
         # Load the KeyedVectors object (the word-to-vector mapping)
-        wv = api.load(MODEL_NAME)
+        wv = api.load(model_name)
     except Exception as e:
         print(f"Error loading model: {e}")
         print("Please ensure you have an active internet connection.")
@@ -61,8 +70,8 @@ def word_vec_to_csv():
     
     # --- Data Extraction ---
     # Filter out stop words, non-ASCII, non-English, and NSFW words
-    # We need to iterate through more words to get NUM_WORDS filtered words
-    print(f"4. Extracting top {NUM_WORDS} words (filtering stop words, non-ASCII, non-English, and NSFW words)...")
+    # We need to iterate through more words to get num_words filtered words
+    print(f"4. Extracting top {num_words} words (filtering stop words, non-ASCII, non-English, and NSFW words)...")
     word_list = []
     all_words = list(wv.key_to_index.keys())
     filtered_count = 0
@@ -74,7 +83,7 @@ def word_vec_to_csv():
             is_english(word) and
             not is_nsfw(word)):
             word_list.append(word)
-            if len(word_list) >= NUM_WORDS:
+            if len(word_list) >= num_words:
                 break
         else:
             filtered_count += 1
@@ -107,12 +116,24 @@ def word_vec_to_csv():
     df = pd.DataFrame(data_rows, columns=column_names)
     
     # Save the DataFrame to a CSV file
-    df.to_csv(OUTPUT_FILE, index=False, header=True)
+    df.to_csv(output_file, index=False, header=True)
 
-    print(f"6. Successfully saved {len(df)} rows to {OUTPUT_FILE}")
+    print(f"6. Successfully saved {len(df)} rows to {output_file}")
+    print(f"   Model: {model_name}, Dimensions: {num_dimensions}")
     print("\nFile Structure:")
     print(df.head())
 
 # Run the function
 if __name__ == "__main__":
-    word_vec_to_csv()
+    # Allow command line arguments: python word_vec_to_csv.py <model_name> <output_file>
+    if len(sys.argv) > 1:
+        model_name = sys.argv[1]
+    else:
+        model_name = DEFAULT_MODEL
+    
+    if len(sys.argv) > 2:
+        output_file = sys.argv[2]
+    else:
+        output_file = DEFAULT_OUTPUT
+    
+    word_vec_to_csv(model_name, output_file)
