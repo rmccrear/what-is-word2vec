@@ -10,6 +10,7 @@ html, body {
 
 body {
   display: block;
+  background-color: #000;
 }
 
 #root {
