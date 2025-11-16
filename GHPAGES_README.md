@@ -47,7 +47,7 @@ Copy the built files from `web-app/dist/` to the repository root:
 # Remove old build files (if any)
 rm -rf assets index.html vite.svg
 
-# Copy new build files
+# Copy new build files to root
 cp -r web-app/dist/* .
 ```
 
@@ -84,6 +84,8 @@ Your site will be available at:
 https://<your-username>.github.io/<repository-name>/
 ```
 
+**Note**: The app is served from the root of the gh-pages branch. The build files from `web-app/dist/` are copied to the root for deployment.
+
 **Note**: It may take a few minutes for the site to be available after pushing.
 
 ## Updating the Deployment
@@ -93,24 +95,28 @@ To update the deployed site:
 1. Make changes on the `main` branch
 2. Build the app: `cd web-app && npm run build`
 3. Switch to gh-pages: `git checkout gh-pages`
-4. Copy build files: `cp -r web-app/dist/* .`
+4. Copy build files to root: `cp -r web-app/dist/* .`
 5. Commit and push: `git add . && git commit -m "Update deployment" && git push origin gh-pages`
 
 ## Important Notes
 
 ### Base Path Configuration
 
-The `vite.config.js` includes a `base` path set to `/word-to-csv/`. **Update this** if your repository has a different name:
+The `vite.config.js` includes a `base` path. Update it based on your deployment:
 
+**For repository subdirectory** (e.g., `username.github.io/repo-name/`):
 ```javascript
 // web-app/vite.config.js
 export default defineConfig({
   plugins: [react()],
-  base: '/your-repo-name/', // Update this!
+  base: '/word-to-csv/', // Update repo name if different
 })
 ```
 
-If deploying to a custom domain or user/organization root, set `base: '/'`.
+**For user/organization root** (e.g., `username.github.io/`):
+```javascript
+base: '/'
+```
 
 ### Build Output
 
@@ -122,12 +128,14 @@ The build creates:
 ### Troubleshooting
 
 **404 Errors**: 
-- Check that the `base` path in `vite.config.js` matches your repository name
+- Check that the `base` path in `vite.config.js` matches your repository structure
 - Ensure `.nojekyll` file exists in the root
+- Verify files from `web-app/dist/` were copied to the root of gh-pages branch
 
 **Assets Not Loading**:
-- Verify all files in `dist/` were copied to root
+- Verify all files in `web-app/dist/` were copied to root
 - Check browser console for 404 errors on specific assets
+- Ensure base path matches your GitHub Pages URL structure
 
 **Changes Not Appearing**:
 - GitHub Pages can take 1-5 minutes to update
