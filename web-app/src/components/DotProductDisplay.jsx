@@ -47,12 +47,12 @@ const DotProductDisplay = ({ word, results, wordVectors, selectedWord, onBack })
         ← Back to About
       </button>
       <h3>
-        Cosine Similarity (via Dot Product):<br />
-        "<VectorTooltip word={word} wordVectors={wordVectors} theme="darkBg">
-          {word}
-        </VectorTooltip>" · "<VectorTooltip word={matchWord} wordVectors={wordVectors} theme="darkBg">
-          {matchWord}
-        </VectorTooltip>" = {cosineSimilarity.toFixed(6)}
+        Cosine Similarity:<br />
+        cos(∠ <VectorTooltip word={word} wordVectors={wordVectors} theme="darkBg">
+          <strong>{word}</strong>
+        </VectorTooltip>, <VectorTooltip word={matchWord} wordVectors={wordVectors} theme="darkBg">
+          <strong>{matchWord}</strong>
+        </VectorTooltip>) = {cosineSimilarity.toFixed(6)}
       </h3>
       <MathFormulaDescription 
         dotProduct={dotProduct}
