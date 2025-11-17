@@ -132,13 +132,15 @@ function App() {
                     placeholder="e.g., people, back, house..."
                     autoFocus
                   />
-                  <WordSuggestions
-                    value={word}
-                    items={wordVectors.words}
-                    onSelect={(selectedWord) => setWord(selectedWord)}
-                    onSuggestionsChange={setHasSuggestions}
-                    inputRef={inputRef}
-                  />
+                  {wordVectors && wordVectors.words && (
+                    <WordSuggestions
+                      value={word}
+                      items={wordVectors.words}
+                      onSelect={(selectedWord) => setWord(selectedWord)}
+                      onSuggestionsChange={setHasSuggestions}
+                      inputRef={inputRef}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -147,15 +149,18 @@ function App() {
                   <div className="error">
                     <strong>Error:</strong> {error}
                   </div>
-                  <AllWordsTable 
-                    words={wordVectors.words}
-                    wordVectors={wordVectors}
-              description={datasetMeta[dataset].description}
-              modelLink={datasetMeta[dataset].modelLink}
-              modelLabel={datasetMeta[dataset].modelLabel}
-                    onWordSelect={(word) => setWord(word)}
-                  />
                 </div>
+              )}
+
+              {wordVectors && wordVectors.words && (
+                <AllWordsTable 
+                  words={wordVectors.words}
+                  wordVectors={wordVectors}
+                  description={datasetMeta[dataset].description}
+                  modelLink={datasetMeta[dataset].modelLink}
+                  modelLabel={datasetMeta[dataset].modelLabel}
+                  onWordSelect={(word) => setWord(word)}
+                />
               )}
 
               {showResults && (
